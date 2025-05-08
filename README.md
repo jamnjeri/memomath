@@ -19,7 +19,12 @@ MemoMath is a game that blends memory and math. Think: matching cards meets ment
 - **No flipping back:**—guesses are made from memory
 - **Score is tracked:**, maybe with a timer
 
-## 🧪 Development Notes
+## 🧪 Development Concepts
+- Hexagonal coordinates: I opted for point-topped hexagons aka Odd-q (vertical layout, pointy -topped hexes.)
+
+
+
+
 - [Documentation](https://docs.google.com/document/d/1FkV1ed6WoJQe_ocxhwGgdI0OaudJtb5iL92mqxuZBLo/edit?usp=sharing)
 
 ## 🎯 Next Steps/ Future Features in Consideration (Optional, for v2+)

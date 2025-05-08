@@ -66,3 +66,19 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Honey comb */
+.board-wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden; /* Prevent scroll */
+  /* display: flex;
+  align-items: center;
+  justify-content: center; */
+}
+
+.honeycomb-board {
+  position: relative;
+  display: block;
+}
