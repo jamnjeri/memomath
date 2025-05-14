@@ -13,6 +13,7 @@ export interface ScreenSizeConfig {
 
 export interface Preset {
     gridSize: number;
+    revealTime: number,
     targetHexCount: number;
     numberRange: [number, number];  // Tuple for a range of numbers
     hexesPerRow: number[]; 

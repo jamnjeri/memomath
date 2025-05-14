@@ -11,7 +11,8 @@ export const GameConfig: GameConfigType = {
     allowDiagonal: false, // Whether diagonal lines are allowed in selections
     presets: {
       easy: { 
-        gridSize: 7, 
+        gridSize: 7,
+        revealTime: 10, 
         targetHexCount: 2, 
         numberRange: [1, 9], 
         hexesPerRow: [2, 3, 2], 
@@ -29,6 +30,7 @@ export const GameConfig: GameConfigType = {
       },
       medium: { 
         gridSize: 19, 
+        revealTime: 8,
         targetHexCount: 3, 
         numberRange: [1, 15], 
         hexesPerRow: [3, 4, 5, 4, 3], 
@@ -46,10 +48,11 @@ export const GameConfig: GameConfigType = {
       },
       hard: { 
         gridSize: 37, 
+        revealTime: 50,
         targetHexCount: 4, 
         numberRange: [1, 20], 
         hexesPerRow: [4, 5, 6, 7, 6, 5, 4], 
-        minHexWidth: 56,
+        minHexWidth: 50,
         spacingMultiplier: {
           small: 0.8,
           medium: 0.79,

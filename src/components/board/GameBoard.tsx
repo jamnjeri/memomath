@@ -1,16 +1,23 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { HexTile } from "./HexTile";
 import { GameConfig } from "../../utils/gameConfig";
 import { Hexagon } from '../../types';
+import { motion } from "framer-motion";
+import Progress from "../ui/Progress";
+import { HelpCircle, Home, RefreshCcw, RefreshCw } from "lucide-react";
 
-const GameBoard:React.FC = () => {
-    const level = 'easy';
-    const gridSize = GameConfig.presets[level].gridSize;
+type DifficultyLevel = keyof typeof GameConfig['presets'];
+
+interface GameBoardProps {
+    level: DifficultyLevel;
+}
+
+const GameBoard:React.FC<GameBoardProps> = ({ level }) => {
     const boardRef = useRef<HTMLDivElement>(null);  // Reference to the board container
     const [hexWidth, setHexWidth] = useState<number>(100); // Responsive width for hexagons
     const [hexHeight, setHexHeight] = useState<number>(115);
     const [hexagons, setHexagons] = useState<Hexagon[]>([]);
-    const [revealed, setRevealed] = useState<boolean>(true);
+    const [revealed, setRevealed] = useState<boolean>(false);
     const [dynamicBorderWidth, setDynamicBorderWidth] = useState<number>(GameConfig.presets[level].borderWidth.medium); // Initialize with a default
     const [dynamicSpacingMultiplier, setDynamicSpacingMultiplier] = useState<number>(GameConfig.presets[level].spacingMultiplier.medium); // Initialize with a default
     // const borderWidth = 3;
@@ -18,6 +25,10 @@ const GameBoard:React.FC = () => {
     const [boardWidthPx, setBoardWidthPx] = useState<number>(0);
     const [boardHeightPx, setBoardHeightPx] = useState<number>(0);
     const [screenSizeCategory, setScreenSizeCategory] = useState<'small' | 'medium' | 'large'>('medium'); // Default
+    const revealTime = GameConfig.presets[level].revealTime;
+    const [countDown, setCountDown] = useState<number>(revealTime);
+    const [countdownActive, setCountdownActive] = useState<boolean>(false);
+    const [progress, setProgress] = useState<number>(100);
 
     // Define your screen size breakpoints
     const smallBreakpoint = 600;
@@ -33,6 +44,60 @@ const GameBoard:React.FC = () => {
         } else {
             setScreenSizeCategory('large');
         }
+    }, []);
+
+    // Generate random bubbles
+    const bubbles = useMemo(() => {
+        return Array.from({ length: 20 }, (_, i) => {
+            return {
+                key: i,
+                style: {
+                    width: `${Math.random() * 300 + 50}px`,
+                    height: `${Math.random() * 300 + 50}px`,
+                    top: `${Math.random() * 100}%`,
+                    left: `${Math.random() * 100}%`,
+                    opacity: Math.random() * 0.5,
+                    transform: `scale(${Math.random() * 0.5 + 0.5})`,
+                }
+            };
+        });
+    }, []);
+
+    // Track countdown and progress bar
+    useEffect(() => {
+        if(!countdownActive) return;
+
+        const totalDuration = revealTime * 1000;
+        const startTime = Date.now();
+
+        const updateProgress = () => {
+            const elapsedTime = Date.now() - startTime;
+            const remainingTime = Math.max(totalDuration - elapsedTime, 0);
+            const progressValue = (remainingTime / totalDuration) * 100;
+
+            setProgress(progressValue);
+            setCountDown(Math.ceil(remainingTime / 1000));
+
+            if(remainingTime > 0) {
+                requestAnimationFrame(updateProgress);
+            } else {
+                setCountdownActive(false);
+                setRevealed(false);
+                setCountDown(0);
+            }
+        };
+
+        requestAnimationFrame(updateProgress);
+
+        return () => {
+            // Cleanup if necessary
+            setCountdownActive(false);
+        };
+    }, [countdownActive, revealTime]);
+
+    useEffect(() => {
+        setCountdownActive(true);
+        setRevealed(true);
     }, []);
 
     // Track screen size changes
@@ -67,7 +132,7 @@ const GameBoard:React.FC = () => {
 
         if(boardHeight < boardWidth) {
             const numRows = GameConfig.presets[level].hexesPerRow.length;
-            const availableVerticalSpace = boardHeight * 0.9;
+            const availableVerticalSpace = boardHeight * 0.75;           // % of screen height you want the board height to occupy
 
             // Hex rows not perfectly stacked ontop of each other hence the 0.75
             const estimatedTotalVerticalSpan = numRows * 0.75 * newHexHeight + (numRows - 1) * dynamicBorderWidth;
@@ -102,10 +167,10 @@ const GameBoard:React.FC = () => {
     };
 
       // Generate random number based on difficulty range
-    const generateRandomNumber = () => {
+    const generateRandomNumber = useCallback(() => {
         const range = GameConfig.presets[level].numberRange;
         return Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0];
-    };
+    }, [level]);
 
     const generateHexagons = useCallback(() => {
         const preset = GameConfig.presets[level];
@@ -119,7 +184,7 @@ const GameBoard:React.FC = () => {
             const hexInRow = hexesPerRow[row];
 
             // Center the row: Calculate the horizontal offset
-            const totalWidth = hexInRow  * hexWidth;
+            const totalWidth = hexInRow  * hexWidth ;
             const maxTotalWidth = maxHexesInRow * hexWidth;
             const rowOffset = (maxTotalWidth - totalWidth) / 2;
 
@@ -144,7 +209,7 @@ const GameBoard:React.FC = () => {
         }
 
         return hexagonsArray;
-    }, [hexWidth, dynamicBorderWidth, dynamicSpacingMultiplier, level, revealed]);
+    }, [hexWidth, dynamicBorderWidth, dynamicSpacingMultiplier, level, revealed, generateRandomNumber]);
 
     // Call the updateHexSize function on window resize
     useEffect(() => {
@@ -173,7 +238,7 @@ const GameBoard:React.FC = () => {
 
             hexagonsData.forEach((hex) => {
                 minX = Math.min(minX, hex.x);
-                maxX = Math.max(maxX, hex.x + hexWidth); //Assuming width is the visual width
+                maxX = Math.max(maxX, hex.x + hexWidth); // Assuming width is the visual width
                 minY = Math.min(minY, hex.y);
                 maxY = Math.max(maxY, hex.y + hexHeight * 0.7); //Approximate visual height
             });
@@ -187,13 +252,116 @@ const GameBoard:React.FC = () => {
 
 
     return (
-        <div className="game-container">
+        <div className="game-container bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 overflow-hidden">
+            {/* Bubbles */}
+            <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-full opacity-10">
+                    {bubbles.map(bubble => (
+                        <div
+                            key={bubble.key}
+                            className="absolute rounded-full bg-white float"
+                            style={bubble.style}
+                        />
+                    ))}
+                </div>
+            </div>
             <div className="board-wrapper">
+                <div
+                    // className={`absolute left-1/2 transform -translate-x-1/2`}
+                    style={{
+                        display: 'flex', //  Add this line
+                        flexDirection: screenSizeCategory === 'small' ? 'column' : 'initial',
+                        alignItems: screenSizeCategory === 'small' ? 'center' : 'initial',
+                    }}
+                >
+                    <h1 className="text-6xl font-extrabold text-center mt-4 mb-8 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)] absolute left-1/2 transform -translate-x-1/2">
+                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-teal-300 to-emerald-300">
+                            MemoMath
+                        </span>
+                    </h1>
+                    <div className={`${screenSizeCategory === 'small' ? '' : ''}`}>
+                        {countdownActive && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0 }}
+                                className="absolute top-4 right-4 z-50 bg-white/10 backdrop-blur-md p-3 rounded-lg shadow-lg border border-white/20 flex items-center gap-3 w-48"
+                                style={ { marginTop: screenSizeCategory === 'small' ? '4rem' : '0' } }
+                            >
+                                <div className="flex-1">
+                                    <Progress
+                                        value={progress}
+                                        className="h-2 bg-white/20"
+                                        indicatorClassName="bg-gradient-to-r from-cyan-500 to-teal-500"
+                                    />
+                                </div>
+                                <div className="text-white font-medium text-sm w-5 text-center">{countDown}</div>
+                            </motion.div>
+                        )}
+                    </div>
+                    <div 
+                        className="flex justify-between w-full mb-6 gap-4 top-4"
+                        style={{ position: 'absolute' }}
+                    >
+                        <div className="flex flex-row items-center w-full max-w-3xl mx-auto">
+                            <motion.div
+                                initial={{ x: -50, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: 0.2 }}
+                                className="bg-white/10 backdrop-blur-md p-4 rounded-xl shadow-lg border border-white/20 flex-1"
+                            >
+                                <span className="text-white/70 font-medium">Score</span>
+                                <div className="text-3xl font-bold text-white"></div>
+                            </motion.div>
+
+                            <motion.div
+                                initial={{ x: 50, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: 0.2 }}
+                                className="bg-white/10 backdrop-blur-md p-4 rounded-xl shadow-lg border border-white/20 flex-1 text-right"
+                            >
+                                <span className="text-white/70 font-medium">Target Number</span>
+                                <div className="text-3xl font-bold text-white"></div>
+                            </motion.div>
+                        </div>
+
+                        <div className="flex flex-row items-center w-full max-w-3xl mx-auto">
+                            <motion.div
+                                initial={{ y: 20, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 0.4 }}
+                                className="w-full flex justify-center gap-3 mb-6"
+                            >
+                                <button 
+                                  type="button"
+                                  className="bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20"
+                                >
+                                    <Home className="mr-2 h-4 w-4"/>
+                                    Home
+                                </button>
+                                <button 
+                                  type="button"
+                                  className="bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20"
+                                >
+                                    <RefreshCw className="mr-2 h-4 w-4"/>
+                                    New Game
+                                </button>
+                                <button 
+                                  type="button"
+                                  className="bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20"
+                                >
+                                    <HelpCircle className="mr-2 h-4 w-4"/>
+                                    Help
+                                </button>
+                            </motion.div>
+                        </div>
+                    </div>
+                </div>
                 <div 
                     className="honeycomb-board" 
                     ref={boardRef}
                     style={{ 
-                        transform: `translate(${boardWidthPx ? (window.innerWidth - boardWidthPx) / 2 : 0}px, ${boardHeightPx ? (window.innerHeight - boardHeightPx) / 2 : 0}px)`,
+                        transform: `translate(${boardWidthPx ? (window.innerWidth - boardWidthPx) / 2 : 0}px, ${boardHeightPx ? (window.innerHeight - boardHeightPx) / 1.5 : 0}px)`,
                     }}
                 >
                     {hexagons.map((hex) => (
