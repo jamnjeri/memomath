@@ -68,33 +68,6 @@ export const HowToPlay: React.FC<HowToPlayProps> = ({ onStartGame }) => {
                                 {key.charAt(0).toUpperCase() + key.slice(1)}
                             </button>
                         ))}
-                        {/* <button 
-                            type="button" 
-                            className={`
-                                px-6 py-3 rounded-full text-lg font-semibold transition-all duration-300 
-                                ${level === "easy" ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white scale-105 shadow-lg" : "bg-white/10 text-white hover:bg-white/30"}
-                            `}
-                        >
-                                Easy
-                            </button>
-                        <button 
-                            type="button" 
-                            className={`
-                                px-6 py-3 rounded-full text-lg font-semibold transition-all duration-300
-                                ${level === "medium" ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white scale-105 shadow-lg" : "bg-white/10 text-white hover:bg-white/30"}
-                            `}
-                        >
-                            Medium
-                        </button>
-                        <button 
-                            type="button" 
-                            className={`
-                                px-6 py-3 rounded-full text-lg font-semibold transition-all duration-300
-                                ${level === "hard" ? "bg-gradient-to-r from-red-500 to-rose-600 text-white scale-105 shadow-lg" : "bg-white/10 text-white hover:bg-white/30"}
-                            `}
-                        >
-                            Hard
-                        </button> */}
                     </div>
                 </div>
                 <button

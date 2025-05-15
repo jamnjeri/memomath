@@ -2,9 +2,10 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { HexTile } from "./HexTile";
 import { GameConfig } from "../../utils/gameConfig";
 import { Hexagon } from '../../types';
-import { motion } from "framer-motion";
 import Progress from "../ui/Progress";
-import { HelpCircle, Home, RefreshCcw, RefreshCw } from "lucide-react";
+import { motion } from "framer-motion";
+import { GamePanel } from "./GamePanel";
+import HelpModal from "../ui/HelpModal";
 
 type DifficultyLevel = keyof typeof GameConfig['presets'];
 
@@ -29,10 +30,11 @@ const GameBoard:React.FC<GameBoardProps> = ({ level }) => {
     const [countDown, setCountDown] = useState<number>(revealTime);
     const [countdownActive, setCountdownActive] = useState<boolean>(false);
     const [progress, setProgress] = useState<number>(100);
+    const [helpModalOpen, setHelpModalOpen] = useState<boolean>(false);
 
     // Define your screen size breakpoints
     const smallBreakpoint = 600;
-    const mediumBreakpoint = 1024;
+    const mediumBreakpoint = 1025;
 
     // Update screen size category based on window width (dynamic border width & spacing multiplier)
     const updateScreenSizeCategory = useCallback(() => {
@@ -299,63 +301,14 @@ const GameBoard:React.FC<GameBoardProps> = ({ level }) => {
                             </motion.div>
                         )}
                     </div>
-                    <div 
-                        className="flex justify-between w-full mb-6 gap-4 top-4"
-                        style={{ position: 'absolute' }}
-                    >
-                        <div className="flex flex-row items-center w-full max-w-3xl mx-auto">
-                            <motion.div
-                                initial={{ x: -50, opacity: 0 }}
-                                animate={{ x: 0, opacity: 1 }}
-                                transition={{ delay: 0.2 }}
-                                className="bg-white/10 backdrop-blur-md p-4 rounded-xl shadow-lg border border-white/20 flex-1"
-                            >
-                                <span className="text-white/70 font-medium">Score</span>
-                                <div className="text-3xl font-bold text-white"></div>
-                            </motion.div>
-
-                            <motion.div
-                                initial={{ x: 50, opacity: 0 }}
-                                animate={{ x: 0, opacity: 1 }}
-                                transition={{ delay: 0.2 }}
-                                className="bg-white/10 backdrop-blur-md p-4 rounded-xl shadow-lg border border-white/20 flex-1 text-right"
-                            >
-                                <span className="text-white/70 font-medium">Target Number</span>
-                                <div className="text-3xl font-bold text-white"></div>
-                            </motion.div>
-                        </div>
-
-                        <div className="flex flex-row items-center w-full max-w-3xl mx-auto">
-                            <motion.div
-                                initial={{ y: 20, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                transition={{ delay: 0.4 }}
-                                className="w-full flex justify-center gap-3 mb-6"
-                            >
-                                <button 
-                                  type="button"
-                                  className="bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20"
-                                >
-                                    <Home className="mr-2 h-4 w-4"/>
-                                    Home
-                                </button>
-                                <button 
-                                  type="button"
-                                  className="bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20"
-                                >
-                                    <RefreshCw className="mr-2 h-4 w-4"/>
-                                    New Game
-                                </button>
-                                <button 
-                                  type="button"
-                                  className="bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20"
-                                >
-                                    <HelpCircle className="mr-2 h-4 w-4"/>
-                                    Help
-                                </button>
-                            </motion.div>
-                        </div>
-                    </div>
+                </div>
+                <div className="game-panel">
+                    {!countdownActive &&  (
+                        <GamePanel 
+                            screenSizeCategory={screenSizeCategory}
+                            onOpenModal={() => setHelpModalOpen(true)} 
+                        />
+                    )}
                 </div>
                 <div 
                     className="honeycomb-board" 
@@ -380,6 +333,7 @@ const GameBoard:React.FC<GameBoardProps> = ({ level }) => {
                     ))}
                 </div>
             </div>
+            {helpModalOpen && <HelpModal onClose={() => setHelpModalOpen(false)} />}
         </div>
     )
 }

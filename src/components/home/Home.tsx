@@ -31,7 +31,7 @@ export const Home: React.FC<HomeProps> = ({ onStartGame }) => {
 
             {/* Title */}
             <div className="relative z-10 w-full max-w-4xl">
-                <h1 className="text-6xl font-extrabold text-center mb-8 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)]">
+                <h1 className="text-6xl font-extrabold text-center mb-6 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)]">
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-teal-300 to-emerald-300">
                         MemoMath
                     </span>
