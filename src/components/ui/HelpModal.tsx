@@ -1,4 +1,4 @@
-import { Brain, Target, Trophy, X, Zap } from "lucide-react";
+import { Brain, Target, Trophy, X, Eye } from "lucide-react";
 import React from "react";
 import { useGame } from "../../hooks/useGame";
 import { GameConfig } from "../../utils/gameConfig";
@@ -26,26 +26,19 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
             <div className="space-y-4 mt-4">
                 <div className="flex items-start">
                     <Brain className="mr-3 h-6 w-6 text-cyan-300 flex-shrink-0 mt-1" />
-                    <p>Numbers are shown for a few seconds at the start, then flipped to show letters.</p>
+                    <p><span className="font-bold text-cyan-100">Memorize:</span> Numbers flash for {revealTime} seconds at the start. Lock them in your memory!</p>
                 </div>
                 <div className="flex items-start">
                     <Target className="mr-3 h-6 w-6 text-teal-300 flex-shrink-0 mt-1" />
-                    <p>Select adjacent hexes in a straight line that add up to the target number.</p>
+                    <p><span className="font-bold text-teal-100">Match:</span> Select <strong>any</strong> combination of tiles that add up to the Target number.</p>
                 </div>
                 <div className="flex items-start">
                     <Trophy className="mr-3 h-6 w-6 text-emerald-300 flex-shrink-0 mt-1" />
-                    <p>Correct guess: +1 point, Incorrect: -1 point. Try to reveal all tiles!</p>
+                    <p><span className="font-bold text-emerald-100">Score:</span> Correct sum = <strong>+10 points</strong>. The tiles clear, and a NEW target appears immediately.</p>
                 </div>
                 <div className="flex items-start">
-                    <Zap className="mr-3 h-6 w-6 text-emerald-300 flex-shrink-0 mt-1" />
-                    <p>
-                        <strong>Current Difficulty:</strong>{""}
-                        <span className="text-sm opacity-80">
-                            {level === "easy" && `Fewer hexagons, ${revealTime} seconds reveal time`}
-                            {level === "medium" && `Standard grid size, ${revealTime} seconds reveal time`}
-                            {level === "hard" && `More hexagons, ${revealTime} seconds reveal time`}
-                        </span>
-                    </p>
+                    <Eye className="mr-3 h-5 w-5 text-purple-300 flex-shrink-0 mt-1" />
+                    <p><span className="font-bold text-purple-100">Stuck?</span> Use the <strong>Peek</strong> button to briefly reveal the board if you forget the numbers.</p>
                 </div>
             </div>
             <div className="flex w-full justify-center">
@@ -55,7 +48,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
                     onClick={() => onClose()}
                 >
                     <X className="mr-2 h-4 w-4" />
-                    Close
+                    Got it !
                 </button>
             </div>
         </div>

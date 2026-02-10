@@ -30,7 +30,7 @@ export const GameConfig: GameConfigType = {
       },
       medium: { 
         gridSize: 19, 
-        revealTime: 8,
+        revealTime: 25,
         targetHexCount: 3, 
         numberRange: [1, 15], 
         hexesPerRow: [3, 4, 5, 4, 3], 
@@ -48,7 +48,7 @@ export const GameConfig: GameConfigType = {
       },
       hard: { 
         gridSize: 37, 
-        revealTime: 50,
+        revealTime: 45,
         targetHexCount: 4, 
         numberRange: [1, 20], 
         hexesPerRow: [4, 5, 6, 7, 6, 5, 4], 

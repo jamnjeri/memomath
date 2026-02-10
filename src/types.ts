@@ -36,11 +36,16 @@ export interface GameConfigType {
 }
 
 export interface Hexagon {
+    id: number;
     x: number;
     y: number;
+    q: number;
+    r: number;
+    s: number;
     letter: string;
     number: number;
     revealed: boolean;
-    id: number;
+    selected?: boolean;
+    cleared?: boolean;
 }
   

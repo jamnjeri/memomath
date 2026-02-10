@@ -10,9 +10,11 @@ interface HexTileProps {
     number: number;
     revealed: boolean;
     borderWidth: number;
+    selected?: boolean;
+    onClick: () => void;
 }
 
-export const HexTile: React.FC<HexTileProps> = ({ x, y, width, height, letter, number, revealed, borderWidth }) => {
+export const HexTile: React.FC<HexTileProps> = ({ x, y, width, height, letter, number, revealed, borderWidth, selected, onClick }) => {
     return (
         <div
             className="hex-tile-wrapper"
@@ -21,7 +23,10 @@ export const HexTile: React.FC<HexTileProps> = ({ x, y, width, height, letter, n
                 top: y,
                 width: width,
                 height: height,
+                cursor: 'pointer',
+                zIndex: selected ? 10 : 1
             }}
+            onClick={onClick}
         >
             <div
                 className="hex-tile"
@@ -30,6 +35,8 @@ export const HexTile: React.FC<HexTileProps> = ({ x, y, width, height, letter, n
                     height: height - borderWidth * 2,
                     top: borderWidth,
                     left: borderWidth,
+                    backgroundColor: selected ? '#000' : '',
+                    color: revealed ? '#000' : (selected ? '#fff' : '#000')
                 }}
             >
                 {revealed ? number : letter}

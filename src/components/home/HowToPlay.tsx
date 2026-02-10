@@ -23,27 +23,42 @@ export const HowToPlay: React.FC<HowToPlayProps> = ({ onStartGame }) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="text-center mb-8 bg-white/10 backdrop-blur-md p-8 rounded-2xl shadow-xl border border-white/20"
+                className="text-center mb-6 bg-white/10 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white/20"
             >
                 <h2 className="text-3xl font-bold mb-6 text-white">How to Play</h2>
-                <ul className="text-left space-y-4 mb-8 text-white/90">
-                    <li className="flex items-start">
-                        <Brain className="mr-2 h-6 w-6 text-cyan-300 flex-shrink-0 mt-1" />
-                        <span style={{ alignSelf: "end" }}>Numbers will be shown for a few seconds, then flipped</span>
+                <ul className="text-left space-y-4 mb-6 text-white/90">
+                    <li className="flex items-center">
+                        <div className="bg-cyan-500/20 p-2 rounded-lg mr-4">
+                            <Brain className="h-6 w-6 text-cyan-300" />
+                        </div>
+                        <div>
+                            <span className="block font-bold text-lg">Memorize</span>
+                            <span className="text-white/60 text-sm">Numbers show for {revealTime}s, then flip over.</span>
+                        </div>
                     </li>
-                    <li className="flex items-start">
-                        <Target className="mr-2 h-6 w-6 text-teal-300 flex-shrink-0 mt-1" />
-                        <span style={{ alignSelf: "end" }}>Select adjacent hexes in a straight line that add up to the target number</span>
+                    <li className="flex items-center">
+                        <div className="bg-teal-500/20 p-2 rounded-lg mr-4">
+                            <Target className="h-6 w-6 text-teal-300" />
+                        </div>
+                        <div>
+                            <span className="block font-bold text-lg">Calculate</span>
+                            <span className="text-white/60 text-sm">Pick any tiles that sum to the Target.</span>
+                        </div>
                     </li>
-                    <li className="flex items-start">
-                        <Trophy className="mr-2 h-6 w-6 text-emerald-300 flex-shrink-0 mt-1" />
-                        <span style={{ alignSelf: "end" }}>Correct guess: +1 point, Incorrect: -1 point</span>
+                    <li className="flex items-center">
+                        <div className="bg-emerald-500/20 p-2 rounded-lg mr-4">
+                            <Trophy className="h-6 w-6 text-emerald-300" />
+                        </div>
+                        <div>
+                            <span className="block font-bold text-lg">Clear the Board</span>
+                            <span className="text-white/60 text-sm">Correct matches vanish. Clear all to win!</span>
+                        </div>
                     </li>
                 </ul>
-                <div className="mb-8">
+                <div className="mb-6">
                     <h3 className="text-xl font-semibold mb-4 text-white flex items-center justify-center">
                         <Zap className="mr-2 h-5 w-5 text-emerald-300"/>
-                        Select Difficulty
+                        Difficulty Level
                     </h3>
                     <div className="flex flex-wrap justify-center gap-4">
                         {Object.keys(GameConfig.presets).map((key) => (
@@ -76,7 +91,7 @@ export const HowToPlay: React.FC<HowToPlayProps> = ({ onStartGame }) => {
                         text-white px-10 py-6 rounded-full text-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                     onClick={onStartGame}
                 >
-                    Start Game
+                    START GAME
                 </button>
                 <div className="mt-4 text-white/70 text-sm">
                     {level === "easy" && <p>Fewer hexagons, longer reveal time ({revealTime} seconds)</p>}
