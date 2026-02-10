@@ -6,7 +6,7 @@ import Progress from "../ui/Progress";
 import { motion, AnimatePresence } from "framer-motion";
 import { GamePanel } from "./GamePanel";
 import HelpModal from "../ui/HelpModal";
-import { isValidSelection, calculateSum, generateSolvableTarget, getHexCoordinates } from "../../engines/BordEngine";
+import { calculateSum, generateSolvableTarget, getHexCoordinates } from "../../engines/BordEngine";
 import { useGame } from "../../hooks/useGame";
 
 type DifficultyLevel = keyof typeof GameConfig['presets'];
