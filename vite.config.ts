@@ -14,5 +14,5 @@ export default defineConfig({
   build: {
     sourcemap: true,
   },
-  base: "/MemoMath/",
+  base: "/memomath/",
 })
