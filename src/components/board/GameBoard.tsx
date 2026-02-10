@@ -498,7 +498,7 @@ const GameBoard:React.FC<GameBoardProps> = ({ level }) => {
                     }}
                 >
                     <h1 className="text-6xl font-extrabold text-center mt-4 mb-8 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)] absolute left-1/2 transform -translate-x-1/2">
-                        <a href="/" className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-teal-300 to-emerald-300">
+                        <a href={import.meta.env.BASE_URL} className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-teal-300 to-emerald-300">
                             MemoMath
                         </a>
                     </h1>
